@@ -32,34 +32,14 @@ class ArticlesController extends Controller
 
     public function store()
     {
-        // validation
-        request()->validate([
-            'title'=>['required', 'min:3', 'max:255'],
-            'excerpt'=>['required', 'min:3', 'max:255'],
-            'body'=>['required', 'min:10', 'max:500']
-        ]);
 
-
-        // clean up 
-        /*$article = new Article();
-        $article->title = request('title');
-        $article->excerpt = request('excerpt');
-        $article->body = request('body');
-
-        $article->save();*/
-
-        Article::create([
-            ''
-        ]);
-
-        return redirect('/articles');
+        Article::create($this->validateArticle());
+        return redirect(route('articles.index'));
 
     }
 
     public function edit(Article $article)
     {
-        // $article = Article::findOrFail($id);
-
         // find the article associated with the id, [] to pass article to the view
         // return view('articles.edit',['article' => $article]);
         return view('articles.edit',compact('article'));
@@ -68,23 +48,27 @@ class ArticlesController extends Controller
 
     public function update(Article $article)
     {
-        // persist the edited resource
-        // $article = Article::findOrFail($id);
 
-        $article->title = request('title');
-        $article->excerpt = request('excerpt');
-        $article->body = request('body');
-
-        $article->save();
-
-        return redirect('/articles/' . $article->id);
-
+        $article->update($this->validateArticle());
+        return redirect($article->path());
     }
+
 
     public function destroy()
     {
         // delete the resource
 
+    }
+
+    // this method allows you to add fields any time without repeating the differences over every method in this class
+    // this case only works when the data to validate is identical in both store() and update()
+    protected function validateArticle()
+    {
+        return request()->validate([
+            'title'=>['required', 'min:3', 'max:255'],
+            'excerpt'=>['required', 'min:3', 'max:255'],
+            'body'=>['required', 'min:10', 'max:500']
+        ]);
     }
 
 }

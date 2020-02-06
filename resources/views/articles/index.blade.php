@@ -8,9 +8,9 @@
 <div id="content">
     <div class="title">
     <h2>
-        <a href="/articles/{{ $article->id }}">
-            {{ $article->title }}
-        </a>
+    <!-- laravel knows how to fetch the correct keyname -->
+    <a href="{{ $article->path() }}">
+            {{ $article->title }}</a>
     </h2>
     <p><img src="images/banner.jpg" alt="" class="image image-full" /> </p>
 </div>
@@ -19,3 +19,8 @@
 </div>
 </div>
 @endsection
+
+<!-- every location where you hardcoded a url need to be updated -->
+<!-- therefore use a named route. So instead of hardcoded /articles/article->id
+    do route('articles.show') not nessesary if you don't change paths very often
+-->
