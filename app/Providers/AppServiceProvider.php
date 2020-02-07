@@ -13,7 +13,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind('App\Example', function () {
+
+            $collaborator = new \App\Collaborator();
+            $foo = 'foobar';
+
+            return new \App\Example($collaborator, $foo); 
+         });
     }
 
     /**

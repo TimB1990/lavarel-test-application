@@ -30,4 +30,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'foo' => 'value' 
 ];
+
+    // often important keys or settings for your validation, let's say we need this key in order to instantiate example then go to example
