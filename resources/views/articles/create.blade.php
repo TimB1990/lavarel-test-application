@@ -46,7 +46,6 @@
                     @enderror
                 
                 </div>
-
             </div>
             <div class="field">
                 <label for="body">Body</label>
@@ -64,6 +63,22 @@
             </div>
             <div>
                 <input type="submit" value="submit"/>
+            </div>
+            <div class="field">
+                <label class="label" for="tag">Tags</label>
+
+                <div class="control">
+                    <select name="tags[]" multiple>
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->id }}">
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('tags')
+                        <p style="color:red;">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
         </form>
     </div>

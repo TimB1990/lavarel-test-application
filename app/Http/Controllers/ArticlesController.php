@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Tag;
 use App\Article;
-use Illuminate\Http\Request;
+// use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
 {
     public function index()
     {
         // render list of resource
-        $articles = Article::latest()->get();
+        if(request('tag')){
+            $articles = Tag::where('name', request('tag'))->firstOrFail()->articles;
+        }
+        else{
+            $articles = Article::latest()->get();
+        }
+
         return view('articles.index', ['articles' => $articles]);
     }
 
@@ -26,14 +33,25 @@ class ArticlesController extends Controller
     public function create()
     {
         // shows a view to create a new resource
-        return view('articles.create');
-
+        return view('articles.create', [
+            'tags' => Tag::all()
+        ]);
     }
 
     public function store()
     {
+        
+        /*Article::create($this->validateArticle());*/
+        // herer we would pass things to the article instance but tag is no part of it, it is an relation ship, therefore apply the notation containing an array. The validation no longer maps
+        // $article = new Article($this->validateArticle());
+        $this->validateArticle();
+        $article = new Article(request(['title','excerpt','body']));
+        $article->user_id = 1; // auth()->id()
+        $article->save();
 
-        Article::create($this->validateArticle());
+        // auth()->user()->articles()->create($article);
+
+        $article->tags()->attach(request('tags'));
         return redirect(route('articles.index'));
 
     }
@@ -67,7 +85,8 @@ class ArticlesController extends Controller
         return request()->validate([
             'title'=>['required', 'min:3', 'max:255'],
             'excerpt'=>['required', 'min:3', 'max:255'],
-            'body'=>['required', 'min:10', 'max:500']
+            'body'=>['required', 'min:10', 'max:500'],
+            'tags' => 'exists:tags, id' // the tag whether it is id or array needs to exist on tag table
         ]);
     }
 
